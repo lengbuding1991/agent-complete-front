@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar" :class="{ 'sidebar-collapsed': collapsed, 'dark': darkMode }">
+  <div class="sidebar" :class="{ 'dark': darkMode }">
     <div class="sidebar-header">
       <!-- 桌面端显示 -->
       <button class="new-chat-btn" @click="$emit('new-chat')">
@@ -12,15 +12,9 @@
         <span class="conversation-switch-icon">💬</span>
         <span class="conversation-switch-text">对话</span>
       </button>
-      
-      <button class="collapse-btn" @click="collapsed = !collapsed">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
     </div>
     
-    <div class="conversation-list" v-if="!collapsed">
+    <div class="conversation-list">
       <div 
         v-for="conversation in conversations" 
         :key="conversation.id"
@@ -49,7 +43,7 @@
       </div>
     </div>
     
-    <div class="sidebar-footer" v-if="!collapsed">
+    <div class="sidebar-footer">
       <div class="footer-actions">
         <button class="footer-btn" @click="$emit('toggle-dark-mode')">
           <span class="footer-icon">
@@ -127,7 +121,6 @@ export default {
   },
   data() {
     return {
-      collapsed: false,
       showMobileConversations: false,
       windowWidth: window.innerWidth
     }
@@ -171,9 +164,7 @@ export default {
   border-right-color: #565869;
 }
 
-.sidebar-collapsed {
-  width: 60px;
-}
+
 
 .sidebar-header {
   padding: 1rem;
@@ -218,40 +209,7 @@ export default {
   font-weight: bold;
 }
 
-.collapse-btn {
-  position: absolute;
-  top: 50%;
-  right: -12px;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 50%;
-  color: #6b7280;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  transition: all 0.2s;
-}
 
-.dark .collapse-btn {
-  background: #40414f;
-  border-color: #565869;
-  color: #d1d5db;
-}
-
-.collapse-btn:hover {
-  background: #f3f4f6;
-  color: #1a1a1a;
-}
-
-.dark .collapse-btn:hover {
-  background: #4a4b59;
-  color: #ffffff;
-}
 
 .conversation-list {
   flex: 1;
