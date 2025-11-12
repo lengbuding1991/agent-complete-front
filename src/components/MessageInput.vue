@@ -266,13 +266,40 @@ export default {
   color: #9ca3af;
 }
 
-@media (max-width: 768px) {
-  .model-info {
-    display: none;
+/* 平板设备 (769px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .input-wrapper {
+    padding: 0.75rem 1rem;
+  }
+  
+  .message-input-container {
+    padding: 0.75rem;
+  }
+  
+  .message-textarea {
+    font-size: 0.95rem;
+    padding: 0.75rem 1rem;
+  }
+  
+  .send-button {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .action-btn {
+    width: 34px;
+    height: 34px;
   }
   
   .input-footer {
-    justify-content: center;
+    font-size: 0.9rem;
+  }
+}
+
+/* 移动设备 (≤768px) */
+@media (max-width: 768px) {
+  .message-input-container {
+    padding-bottom: 80px; /* 为底部导航栏留出空间 */
   }
   
   .input-wrapper {
@@ -292,9 +319,34 @@ export default {
     width: 36px;
     height: 36px;
   }
+  
+  .action-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .input-footer {
+    font-size: 0.85rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .footer-text {
+    order: 2;
+  }
+  
+  .model-info {
+    order: 1;
+  }
 }
 
+/* 小屏手机 (≤480px) */
 @media (max-width: 480px) {
+  .message-input-container {
+    padding-bottom: 70px; /* 为底部导航栏留出空间 */
+  }
+  
   .input-wrapper {
     padding: 0.5rem 0.75rem;
   }
@@ -320,6 +372,15 @@ export default {
   .action-btn {
     width: 32px;
     height: 32px;
+  }
+  
+  .input-footer {
+    font-size: 0.8rem;
+    gap: 0.25rem;
+  }
+  
+  .footer-icon {
+    font-size: 0.9rem;
   }
 }
 </style>

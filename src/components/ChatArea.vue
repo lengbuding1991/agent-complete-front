@@ -408,23 +408,60 @@ export default {
   }
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
+/* 平板设备 (769px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
   .messages-container {
-    padding: 0.5rem;
+    padding: 1rem;
   }
   
   .welcome-message {
-    padding: 1rem 0;
+    padding: 1.5rem 0;
+  }
+  
+  .welcome-content {
+    gap: 0.75rem;
+  }
+  
+  .avatar {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .message-text {
+    font-size: 0.95rem;
   }
   
   .message {
-    padding: 1rem 0;
+    padding: 1.25rem 0;
   }
   
   .message-container {
-    padding: 0 0.5rem;
+    padding: 0 1rem;
     gap: 0.75rem;
+  }
+  
+  .message-text :deep(pre) {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* 移动设备 (≤768px) */
+@media (max-width: 768px) {
+  .messages-container {
+    padding: 0.75rem;
+    padding-bottom: 80px; /* 为底部导航栏留出空间 */
+  }
+  
+  .welcome-message {
+    padding: 1.5rem 0;
+  }
+  
+  .welcome-content {
+    gap: 0.75rem;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
   
   .avatar {
@@ -434,30 +471,51 @@ export default {
   
   .message-text {
     font-size: 0.9rem;
-    line-height: 1.5;
+  }
+  
+  .message {
+    padding: 1rem 0;
+  }
+  
+  .message-container {
+    padding: 0 0.75rem;
+    gap: 0.75rem;
+  }
+  
+  .message-text :deep(pre) {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    margin: 0.5rem 0;
+  }
+  
+  .message-text :deep(code) {
+    font-size: 0.8rem;
+    padding: 0.125rem 0.25rem;
   }
   
   .message-text :deep(h1) {
     font-size: 1.25rem;
+    margin: 0.75rem 0 0.5rem;
   }
   
   .message-text :deep(h2) {
-    font-size: 1.1rem;
-  }
-  
-  .message-text :deep(pre) {
-    padding: 0.75rem;
-    font-size: 0.8rem;
+    font-size: 1.125rem;
+    margin: 0.5rem 0 0.25rem;
   }
 }
 
+/* 小屏手机 (≤480px) */
 @media (max-width: 480px) {
   .messages-container {
-    padding: 0.25rem;
+    padding: 0.5rem;
+    padding-bottom: 70px; /* 为底部导航栏留出空间 */
   }
   
-  .message-container {
-    padding: 0 0.25rem;
+  .welcome-message {
+    padding: 1rem 0;
+  }
+  
+  .welcome-content {
     gap: 0.5rem;
   }
   
@@ -468,10 +526,46 @@ export default {
   
   .message-text {
     font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  
+  .message {
+    padding: 0.75rem 0;
+  }
+  
+  .message-container {
+    padding: 0 0.5rem;
+    gap: 0.5rem;
   }
   
   .message-text :deep(pre) {
     padding: 0.5rem;
+    font-size: 0.8rem;
+    margin: 0.5rem 0;
+    border-radius: 0.25rem;
+  }
+  
+  .message-text :deep(code) {
+    font-size: 0.75rem;
+    padding: 0.1rem 0.2rem;
+  }
+  
+  .message-text :deep(h1) {
+    font-size: 1.125rem;
+    margin: 0.5rem 0 0.25rem;
+  }
+  
+  .message-text :deep(h2) {
+    font-size: 1rem;
+    margin: 0.5rem 0 0.25rem;
+  }
+  
+  .message-actions {
+    gap: 0.25rem;
+  }
+  
+  .action-btn {
+    padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
   }
 }

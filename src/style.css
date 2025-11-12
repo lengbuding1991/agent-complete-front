@@ -19,10 +19,56 @@ body {
   body {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
+    /* 防止iOS Safari的弹性滚动 */
+    overscroll-behavior-y: contain;
   }
   
   #app {
     overflow: auto;
+    /* 改善移动端滚动性能 */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+  
+  /* 改善按钮和交互元素的触摸体验 */
+  button, .btn, .action-btn, .send-button {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    min-height: 44px; /* iOS推荐的最小触摸目标尺寸 */
+    min-width: 44px;
+  }
+  
+  /* 改善输入框的触摸体验 */
+  input, textarea, select {
+    font-size: 16px; /* 防止iOS Safari的自动缩放 */
+    touch-action: manipulation;
+  }
+  
+  /* 改善链接的触摸体验 */
+  a {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* 防止长按选择文本 */
+  .message-content, .chat-item {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* 允许消息内容选择 */
+  .message-content * {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
   }
 }
 

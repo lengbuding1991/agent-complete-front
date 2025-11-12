@@ -374,35 +374,35 @@ function MyComponent() {
 
 <style scoped>
 .main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  min-width: 0;
-  width: 100%;
-  overflow: hidden;
-  position: relative;
-}
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    min-width: 0; /* 防止flex项目溢出 */
+  }
 
-.empty-state {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  background: #ffffff;
-  transition: background-color 0.3s;
-}
+  .empty-state {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    transition: background-color 0.3s;
+    min-height: 100vh; /* 确保在移动端有足够高度 */
+  }
 
-.empty-state.dark {
-  background: #343541;
-}
+  .empty-state.dark {
+    background: #343541;
+  }
 
-.empty-content {
-  text-align: center;
-  max-width: 800px;
-  width: 100%;
-}
+  .empty-content {
+    text-align: center;
+    max-width: 600px;
+    padding: 2rem;
+    width: 100%;
+  }
 
 .logo {
   margin-bottom: 1.5rem;
@@ -532,61 +532,131 @@ function MyComponent() {
   font-size: 1rem;
 }
 
-@media (max-width: 768px) {
+/* 平板设备 (769px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .suggestion-chips {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .empty-content {
+    max-width: 90%;
+  }
+  
+  .capability-item {
+    padding: 1rem;
+  }
+  
   .main-content {
+    width: calc(100vw - 60px); /* 侧边栏折叠时的宽度 */
+  }
+}
+
+/* 移动设备 (≤768px) */
+@media (max-width: 768px) {
+  #app {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .main-content {
+    width: 100vw;
+    min-height: calc(100vh - 60px); /* 减去侧边栏高度 */
+  }
+  
+  .sidebar {
+    width: 100vw;
+    height: 60px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    border-right: none;
+    border-top: 1px solid #e5e5e5;
+  }
+  
+  .sidebar.dark {
+    border-top-color: #565869;
+  }
+  
+  .sidebar-collapsed {
     width: 100vw;
   }
   
   .suggestion-chips {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
   
   .capability-list {
-    flex-direction: column;
-    gap: 1rem;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
   
   .empty-content h1 {
     font-size: 1.75rem;
-  }
-}
-
-/* 平板设备优化 */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .suggestion-chips {
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 500px;
-  }
-  
-  .empty-content {
-    max-width: 600px;
-  }
-}
-
-/* 小屏幕手机优化 */
-@media (max-width: 480px) {
-  .empty-state {
-    padding: 1rem;
-  }
-  
-  .empty-content h1 {
-    font-size: 1.5rem;
   }
   
   .empty-content p {
     font-size: 1rem;
   }
   
-  .suggestions {
-    margin: 2rem 0;
+  .empty-state {
+    padding-bottom: 80px; /* 为底部导航栏留出空间 */
+  }
+}
+
+/* 小屏手机 (≤480px) */
+@media (max-width: 480px) {
+  .empty-state {
+    padding: 1rem;
+    padding-bottom: 80px;
+  }
+  
+  .empty-content {
+    padding: 1.5rem 1rem;
+  }
+  
+  .empty-content h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .empty-content p {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .suggestion-chips {
+    gap: 0.5rem;
   }
   
   .chip {
-    padding: 0.5rem 0.75rem;
+    padding: 0.75rem;
+    font-size: 0.9rem;
   }
   
-  .chip-text {
-    font-size: 0.8rem;
+  .chip-icon {
+    font-size: 1rem;
+  }
+  
+  .capability-list {
+    gap: 0.5rem;
+  }
+  
+  .capability-item {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .capability-icon {
+    font-size: 1.25rem;
+  }
+  
+  .logo svg {
+    width: 32px;
+    height: 32px;
   }
 }
 </style>

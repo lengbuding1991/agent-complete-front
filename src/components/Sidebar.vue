@@ -1,10 +1,18 @@
 <template>
   <div class="sidebar" :class="{ 'sidebar-collapsed': collapsed, 'dark': darkMode }">
     <div class="sidebar-header">
+      <!-- 桌面端显示 -->
       <button class="new-chat-btn" @click="$emit('new-chat')">
         <span class="plus-icon">+</span>
         <span class="btn-text">新对话</span>
       </button>
+      
+      <!-- 移动端对话切换按钮 -->
+      <button class="conversation-switch-btn" @click="showMobileConversations = !showMobileConversations">
+        <span class="conversation-switch-icon">💬</span>
+        <span class="conversation-switch-text">对话</span>
+      </button>
+      
       <button class="collapse-btn" @click="collapsed = !collapsed">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -70,6 +78,42 @@
         <span class="username">用户</span>
       </div>
     </div>
+    
+    <!-- 移动端对话列表弹窗 -->
+    <div v-if="isMobile" class="mobile-conversation-modal" :class="{ active: showMobileConversations }" @click="showMobileConversations = false">
+      <div class="mobile-conversation-list" @click.stop>
+        <div class="mobile-conversation-header">
+          <h3 class="mobile-conversation-title">对话列表</h3>
+          <button class="mobile-close-btn" @click="showMobileConversations = false">×</button>
+        </div>
+        
+        <div 
+          v-for="conversation in conversations" 
+          :key="conversation.id"
+          class="mobile-conversation-item"
+          :class="{ active: conversation.id === activeConversation }"
+          @click="$emit('select-conversation', conversation.id); showMobileConversations = false"
+        >
+          <div class="mobile-conversation-content">
+            <span class="mobile-conversation-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M14 4.66667V11.3333C14 11.7015 13.7015 12 13.3333 12H4.66667C4.29848 12 4 11.7015 4 11.3333V4.66667C4 4.29848 4.29848 4 4.66667 4H13.3333C13.7015 4 14 4.29848 14 4.66667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 4.66667V11.3333C2 11.7015 2.29848 12 2.66667 12H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 8H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="mobile-conversation-title-text">{{ conversation.title }}</span>
+          </div>
+        </div>
+        
+        <!-- 如果没有对话，显示提示 -->
+        <div v-if="conversations.length === 0" class="mobile-conversation-item">
+          <div class="mobile-conversation-content">
+            <span class="mobile-conversation-title-text">暂无对话</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -83,7 +127,25 @@ export default {
   },
   data() {
     return {
-      collapsed: false
+      collapsed: false,
+      showMobileConversations: false,
+      windowWidth: window.innerWidth
+    }
+  },
+  computed: {
+    isMobile() {
+      return this.windowWidth <= 768;
+    }
+  },
+  mounted() {
+    window.addEventListener('resize', this.handleResize);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  },
+  methods: {
+    handleResize() {
+      this.windowWidth = window.innerWidth;
     }
   },
   emits: ['new-chat', 'select-conversation', 'delete-conversation', 'toggle-dark-mode']
@@ -241,6 +303,11 @@ export default {
   color: #d1d5db;
 }
 
+/* 电脑端隐藏对话切换按钮 */
+.conversation-switch-btn {
+  display: none;
+}
+
 .conversation-title {
   white-space: nowrap;
   overflow: hidden;
@@ -362,25 +429,72 @@ export default {
   font-weight: 500;
 }
 
-/* 响应式设计 */
+/* 移动设备 (≤768px) - 底部导航栏模式 */
 @media (max-width: 768px) {
   .sidebar {
-    position: absolute;
-    z-index: 100;
-    transform: translateX(-100%);
+    width: 100vw;
+    height: 60px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    border-right: none;
+    border-top: 1px solid #e5e5e5;
+    padding: 0;
+  }
+  
+  .sidebar.dark {
+    border-top-color: #565869;
   }
   
   .sidebar-collapsed {
-    transform: translateX(0);
-    width: 60px;
+    width: 100vw;
   }
   
-  .sidebar:not(.sidebar-collapsed) {
-    transform: translateX(0);
-    width: 260px;
+  .sidebar-header {
+    padding: 0;
+    border-bottom: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+    flex: 1;
+  }
+  
+  .new-chat-btn {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .plus-icon {
+    font-size: 1.5rem;
+    font-weight: bold;
   }
   
   .btn-text {
+    display: block;
+    font-size: 0.7rem;
+    line-height: 1;
+  }
+  
+  .collapse-btn {
+    display: none;
+  }
+  
+  .conversation-list {
+    display: none;
+  }
+  
+  .sidebar-footer {
     display: none;
   }
   
@@ -390,6 +504,193 @@ export default {
   
   .username {
     display: none;
+  }
+  
+  /* 移动端底部导航栏样式 */
+  .sidebar-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: inherit;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .new-chat-btn {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* 移动端对话切换按钮 */
+  .conversation-switch-btn {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2px;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+  }
+  
+  .new-chat-btn .btn-text {
+    display: none; /* 移动端隐藏新对话按钮文字 */
+  }
+  
+  /* 移动端显示对话切换按钮 */
+  .conversation-switch-btn {
+    display: flex;
+  }
+  
+  .conversation-switch-icon {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .conversation-switch-text {
+    display: block;
+    font-size: 0.7rem;
+    line-height: 1;
+  }
+  
+  /* 移动端对话列表弹窗 */
+  .mobile-conversation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 60px;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+  
+  .mobile-conversation-modal.active {
+    display: block;
+  }
+  
+  .mobile-conversation-list {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 60vh;
+    background: #ffffff;
+    border-radius: 1rem 1rem 0 0;
+    overflow-y: auto;
+    padding: 1rem;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .dark .mobile-conversation-list {
+    background: #202123;
+  }
+  
+  .mobile-conversation-modal.active .mobile-conversation-list {
+    transform: translateY(0);
+  }
+  
+  .mobile-conversation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  
+  .dark .mobile-conversation-header {
+    border-bottom-color: #565869;
+  }
+  
+  .mobile-conversation-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  
+  .mobile-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6b7280;
+  }
+  
+  .mobile-conversation-item {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: 1px solid transparent;
+  }
+  
+  .mobile-conversation-item:hover {
+    background: #f3f4f6;
+  }
+  
+  .dark .mobile-conversation-item:hover {
+    background: #343541;
+  }
+  
+  .mobile-conversation-item.active {
+    background: #e5e7eb;
+    border-color: #d1d5db;
+  }
+  
+  .dark .mobile-conversation-item.active {
+    background: #40414f;
+    border-color: #565869;
+  }
+  
+  .mobile-conversation-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .mobile-conversation-icon {
+    flex-shrink: 0;
+  }
+  
+  .mobile-conversation-title-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* 小屏手机 (≤480px) */
+@media (max-width: 480px) {
+  .sidebar {
+    height: 56px;
+  }
+  
+  .new-chat-btn {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .plus-icon {
+    font-size: 1.25rem;
+  }
+  
+  .btn-text {
+    font-size: 0.65rem;
   }
 }
 </style>

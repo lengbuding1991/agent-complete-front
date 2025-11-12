@@ -192,17 +192,51 @@ export default {
   border-color: #6e6e80;
 }
 
-@media (max-width: 768px) {
-  .header-content {
+/* 平板设备 (769px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .chat-header {
     padding: 0.75rem 1rem;
   }
   
-  .conversation-stats {
-    display: none;
+  .header-content {
+    padding: 0;
   }
   
   .conversation-title {
     font-size: 1rem;
+  }
+  
+  .conversation-stats {
+    font-size: 0.8rem;
+  }
+  
+  .action-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* 移动设备 (≤768px) */
+@media (max-width: 768px) {
+  .chat-header {
+    padding: 0.75rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .chat-header.dark {
+    background: rgba(52, 53, 65, 0.9);
+  }
+  
+  .header-content {
+    padding: 0;
+  }
+  
+  .conversation-stats {
+    display: none;
   }
   
   .header-actions {
@@ -213,10 +247,16 @@ export default {
     width: 32px;
     height: 32px;
   }
+  
+  .menu-btn {
+    width: 36px;
+    height: 36px;
+  }
 }
 
+/* 小屏手机 (≤480px) */
 @media (max-width: 480px) {
-  .header-content {
+  .chat-header {
     padding: 0.5rem 0.75rem;
   }
   
@@ -232,5 +272,16 @@ export default {
     width: 28px;
     height: 28px;
   }
+  
+  .menu-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .action-btn svg,
+  .menu-btn svg {
+    width: 16px;
+    height: 16px;
+  }
 }
-</style>
+ </style>
