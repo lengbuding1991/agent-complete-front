@@ -110,7 +110,7 @@ export default {
       activeConversationId: null,
       thinking: false,
       conversationIdCounter: 1,
-      darkMode: false
+      darkMode: true
     }
   },
   computed: {

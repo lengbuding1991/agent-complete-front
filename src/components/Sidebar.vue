@@ -62,14 +62,14 @@
           <span class="footer-text">{{ darkMode ? '浅色模式' : '深色模式' }}</span>
         </button>
       </div>
-      <div class="user-info">
+      <div class="user-info" @click="showLoginModal = true">
         <div class="avatar">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M16.6667 17.5V15.8333C16.6667 14.9493 16.3155 14.1014 15.6904 13.4763C15.0653 12.8512 14.2174 12.5 13.3333 12.5H6.66667C5.78261 12.5 4.93477 12.8512 4.30964 13.4763C3.68452 14.1014 3.33333 14.9493 3.33333 15.8333V17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M10 9.16667C11.8409 9.16667 13.3333 7.67428 13.3333 5.83333C13.3333 3.99238 11.8409 2.5 10 2.5C8.15905 2.5 6.66667 3.99238 6.66667 5.83333C6.66667 7.67428 8.15905 9.16667 10 9.16667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
-        <span class="username">用户</span>
+        <span class="username">登录</span>
       </div>
     </div>
     
@@ -108,6 +108,97 @@
         </div>
       </div>
     </div>
+    
+    <!-- 登录/注册弹窗 -->
+    <div v-if="showLoginModal" class="login-modal" @click="showLoginModal = false">
+      <div class="login-modal-content" @click.stop>
+        <div class="login-modal-header">
+          <h3 class="login-modal-title">{{ isLogin ? '登录' : '注册' }}</h3>
+          <button class="login-close-btn" @click="showLoginModal = false">×</button>
+        </div>
+        
+        <div class="login-modal-body">
+          <!-- 登录表单 -->
+          <form v-if="isLogin" @submit.prevent="handleLogin" class="login-form">
+            <div class="form-group">
+              <label for="email">邮箱</label>
+              <input 
+                id="email" 
+                type="email" 
+                v-model="loginForm.email" 
+                placeholder="请输入邮箱"
+                required
+              >
+            </div>
+            <div class="form-group">
+              <label for="password">密码</label>
+              <input 
+                id="password" 
+                type="password" 
+                v-model="loginForm.password" 
+                placeholder="请输入密码"
+                required
+              >
+            </div>
+            <button type="submit" class="login-btn">登录</button>
+            <p class="switch-text">
+              还没有账号？
+              <span class="switch-link" @click="isLogin = false">立即注册</span>
+            </p>
+          </form>
+          
+          <!-- 注册表单 -->
+          <form v-else @submit.prevent="handleRegister" class="register-form">
+            <div class="form-group">
+              <label for="username">用户名</label>
+              <input 
+                id="username" 
+                type="text" 
+                v-model="registerForm.username" 
+                placeholder="请输入用户名"
+                required
+              >
+            </div>
+            <div class="form-group">
+              <label for="reg-email">邮箱</label>
+              <input 
+                id="reg-email" 
+                type="email" 
+                v-model="registerForm.email" 
+                placeholder="请输入邮箱"
+                required
+              >
+            </div>
+            <div class="form-group">
+              <label for="reg-password">密码</label>
+              <input 
+                id="reg-password" 
+                type="password" 
+                v-model="registerForm.password" 
+                placeholder="请输入密码（至少6位）"
+                required
+                minlength="6"
+              >
+            </div>
+            <div class="form-group">
+              <label for="confirm-password">确认密码</label>
+              <input 
+                id="confirm-password" 
+                type="password" 
+                v-model="registerForm.confirmPassword" 
+                placeholder="请再次输入密码"
+                required
+              >
+            </div>
+            <button type="submit" class="register-btn">注册</button>
+            <p class="switch-text">
+              已有账号？
+              <span class="switch-link" @click="isLogin = true">立即登录</span>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -122,7 +213,19 @@ export default {
   data() {
     return {
       showMobileConversations: false,
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth,
+      showLoginModal: false,
+      isLogin: true,
+      loginForm: {
+        email: '',
+        password: ''
+      },
+      registerForm: {
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      }
     }
   },
   computed: {
@@ -139,6 +242,38 @@ export default {
   methods: {
     handleResize() {
       this.windowWidth = window.innerWidth;
+    },
+    handleLogin() {
+      // 模拟登录逻辑
+      if (this.loginForm.email && this.loginForm.password) {
+        console.log('登录成功:', this.loginForm.email);
+        this.showLoginModal = false;
+        this.$emit('user-login', { email: this.loginForm.email });
+        // 清空表单
+        this.loginForm = { email: '', password: '' };
+      }
+    },
+    handleRegister() {
+      // 验证密码是否匹配
+      if (this.registerForm.password !== this.registerForm.confirmPassword) {
+        alert('密码不匹配，请重新输入');
+        return;
+      }
+      
+      // 验证密码长度
+      if (this.registerForm.password.length < 6) {
+        alert('密码长度至少6位');
+        return;
+      }
+      
+      // 模拟注册逻辑
+      if (this.registerForm.username && this.registerForm.email && this.registerForm.password) {
+        console.log('注册成功:', this.registerForm);
+        alert('注册成功！请登录');
+        this.isLogin = true;
+        // 清空表单
+        this.registerForm = { username: '', email: '', password: '', confirmPassword: '' };
+      }
     }
   },
   emits: ['new-chat', 'select-conversation', 'delete-conversation', 'toggle-dark-mode']
@@ -649,6 +784,193 @@ export default {
   
   .btn-text {
     font-size: 0.65rem;
+  }
+}
+
+/* 登录/注册弹窗样式 */
+.login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.login-modal-content {
+  background: #ffffff;
+  border-radius: 1rem;
+  width: 90%;
+  max-width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: modalSlideIn 0.3s ease;
+}
+
+.dark .login-modal-content {
+  background: #202123;
+  color: #ffffff;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.login-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.dark .login-modal-header {
+  border-bottom-color: #565869;
+}
+
+.login-modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.login-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6b7280;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.login-close-btn:hover {
+  background: #f3f4f6;
+}
+
+.dark .login-close-btn:hover {
+  background: #343541;
+}
+
+.login-modal-body {
+  padding: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.dark .form-group label {
+  color: #d1d5db;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.dark .form-group input {
+  background: #343541;
+  border-color: #565869;
+  color: #ffffff;
+}
+
+.dark .form-group input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.login-btn, .register-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-bottom: 1rem;
+}
+
+.login-btn:hover, .register-btn:hover {
+  background: #2563eb;
+}
+
+.switch-text {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.dark .switch-text {
+  color: #d1d5db;
+}
+
+.switch-link {
+  color: #3b82f6;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.switch-link:hover {
+  color: #2563eb;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .login-modal-content {
+    width: 95%;
+    margin: 1rem;
+  }
+  
+  .login-modal-header {
+    padding: 1rem 1rem 0.75rem;
+  }
+  
+  .login-modal-body {
+    padding: 1rem;
   }
 }
 </style>
